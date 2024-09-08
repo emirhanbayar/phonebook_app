@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 import '../models/contact.dart';
 import '../widgets/screen_layout.dart';
 import '../widgets/contacts_screen_header.dart';
@@ -14,6 +15,8 @@ class ContactsListScreen extends StatefulWidget {
 
 class _ContactsListScreenState extends State<ContactsListScreen> with WidgetsBindingObserver {
   bool _isLoading = true;
+  Timer? _debounce;
+  String _lastSearchQuery = '';
 
   @override
   void initState() {
@@ -24,6 +27,7 @@ class _ContactsListScreenState extends State<ContactsListScreen> with WidgetsBin
 
   @override
   void dispose() {
+    _debounce?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -41,13 +45,23 @@ class _ContactsListScreenState extends State<ContactsListScreen> with WidgetsBin
     _fetchContacts();
   }
 
-  Future<void> _fetchContacts() async {
+  Future<void> _fetchContacts({String? search}) async {
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<ContactProvider>(context, listen: false).fetchContacts();
+    await Provider.of<ContactProvider>(context, listen: false).fetchContacts(search: search);
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  void _onSearch(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (value != _lastSearchQuery) {
+        _lastSearchQuery = value;
+        _fetchContacts(search: value);
+      }
     });
   }
 
@@ -57,7 +71,7 @@ class _ContactsListScreenState extends State<ContactsListScreen> with WidgetsBin
       child: Consumer<ContactProvider>(
         builder: (context, contactProvider, child) {
           return RefreshIndicator(
-            onRefresh: _fetchContacts,
+            onRefresh: () => _fetchContacts(),
             child: Container(
               padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: Column(
@@ -66,9 +80,7 @@ class _ContactsListScreenState extends State<ContactsListScreen> with WidgetsBin
                     onAddPressed: () => Navigator.pushNamed(context, '/new_contact').then((_) => _fetchContacts()),
                   ),
                   CustomSearchBar(
-                    onSearch: (value) {
-                      contactProvider.fetchContacts(search: value);
-                    },
+                    onSearch: _onSearch,
                   ),
                   Expanded(
                     child: _isLoading
