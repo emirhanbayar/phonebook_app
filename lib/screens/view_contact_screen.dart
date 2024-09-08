@@ -14,7 +14,8 @@ class ViewContactScreen extends StatefulWidget {
   _ViewContactScreenState createState() => _ViewContactScreenState();
 }
 
-class _ViewContactScreenState extends State<ViewContactScreen> with WidgetsBindingObserver {
+class _ViewContactScreenState extends State<ViewContactScreen>
+    with WidgetsBindingObserver {
   late Contact _contact;
   late ApiService _apiService;
   bool _isLoading = true;
@@ -74,14 +75,16 @@ class _ViewContactScreenState extends State<ViewContactScreen> with WidgetsBindi
       builder: (BuildContext context) {
         return DeleteAccountDrawer(
           onYes: () async {
-            final contactProvider = Provider.of<ContactProvider>(context, listen: false);
+            final contactProvider =
+                Provider.of<ContactProvider>(context, listen: false);
             try {
               await contactProvider.deleteContact(_contact.id);
               Navigator.pop(context); // Close the drawer
               Navigator.pop(context); // Go back to contacts list
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: SuccessNotification(message: 'Contact deleted successfully'),
+                  content: SuccessNotification(
+                      message: 'Contact deleted successfully'),
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                 ),
@@ -114,31 +117,31 @@ class _ViewContactScreenState extends State<ViewContactScreen> with WidgetsBindi
       child: _isLoading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-           child: Column(
-            children: [
-            ProfileHeader(
-              title: 'Contact',
-              onCancel: () => Navigator.pop(context),
-              onAction: _editContact,
-              actionText: 'Edit',
-            ),
-            ProfileAvatar(
-              imageUrl: _contact.profileImageUrl,
-              onTap: () {}, // No action on view screen
-              caption: "",
-            ),
-            Padding(
-              padding: EdgeInsets.all(30),
-              child: ContactDisplay(
-                firstName: _contact.firstName,
-                lastName: _contact.lastName,
-                phoneNumber: _contact.phoneNumber,
-                onDeleteContact: _showDeleteConfirmation,
+              child: Column(
+                children: [
+                  ProfileHeader(
+                    title: '',
+                    onCancel: () => Navigator.pop(context),
+                    onAction: _editContact,
+                    actionText: 'Edit',
+                  ),
+                  ProfileAvatar(
+                    imageUrl: _contact.profileImageUrl,
+                    onTap: () {}, // No action on view screen
+                    caption: "",
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: ContactDisplay(
+                      firstName: _contact.firstName,
+                      lastName: _contact.lastName,
+                      phoneNumber: _contact.phoneNumber,
+                      onDeleteContact: _showDeleteConfirmation,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

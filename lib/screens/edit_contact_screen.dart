@@ -67,7 +67,8 @@ class _EditContactScreenState extends State<EditContactScreen> {
       _isUploading = true;
     });
 
-    final contactProvider = Provider.of<ContactProvider>(context, listen: false);
+    final contactProvider =
+        Provider.of<ContactProvider>(context, listen: false);
     final apiService = ApiService();
 
     try {
@@ -126,39 +127,39 @@ class _EditContactScreenState extends State<EditContactScreen> {
             child: Column(
               children: [
                 ProfileHeader(
-                  title: 'Edit Contact',
+                  title: '',
                   onCancel: () => Navigator.pop(context),
                   onAction: _isUploading ? null : () => _updateContact(),
                   actionText: 'Done',
                   isActionEnabled: _hasChanges && !_isUploading,
                 ),
-        ProfileAvatar(
-          imageFile: _imageFile,
-          imageUrl: _profileImageUrl,
-          onTap: _showPhotoOptions,
-          caption: "Change Photo",
-        ),
-        Padding(
-        padding: EdgeInsets.all(30),
-          child: ContactForm(
-            firstNameController: _firstNameController,
-            lastNameController: _lastNameController,
-            phoneNumberController: _phoneNumberController,
-            onChanged: _checkForChanges,
-          ),
-        ),
-        ],
-        ),
-        ),
-            if (_isUploading)
-              Container(
-                color: Colors.black54,
-                child: Center(
-                  child: CircularProgressIndicator(),
+                ProfileAvatar(
+                  imageFile: _imageFile,
+                  imageUrl: _profileImageUrl,
+                  onTap: _showPhotoOptions,
+                  caption: "Change Photo",
                 ),
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child: ContactForm(
+                    firstNameController: _firstNameController,
+                    lastNameController: _lastNameController,
+                    phoneNumberController: _phoneNumberController,
+                    onChanged: _checkForChanges,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_isUploading)
+            Container(
+              color: Colors.black54,
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
-          ],
-        ),
+            ),
+        ],
+      ),
     );
   }
 }
