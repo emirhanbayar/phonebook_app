@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/constants.dart';
 
 class PhotoOptionDrawer extends StatelessWidget {
   final VoidCallback onCameraPressed;
@@ -21,7 +22,7 @@ class PhotoOptionDrawer extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color(0xFFF4F4F4),
+          color: AppConstants.backgroundColor,
           boxShadow: [
             BoxShadow(
               color: Color(0x40000000),
@@ -40,7 +41,8 @@ class PhotoOptionDrawer extends StatelessWidget {
                   iconPath,
                   width: 24,
                   height: 24,
-                  placeholderBuilder: (BuildContext context) => SizedBox(width: 24, height: 24),
+                  placeholderBuilder: (BuildContext context) =>
+                      SizedBox(width: 24, height: 24),
                 ),
               if (iconPath.isNotEmpty) SizedBox(width: 10),
               Text(
@@ -48,7 +50,9 @@ class PhotoOptionDrawer extends StatelessWidget {
                 style: GoogleFonts.nunito(
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
-                  color: iconPath.isEmpty ? Color(0xFF0075FF) : Color(0xFF000000),
+                  color: iconPath.isEmpty
+                      ? AppConstants.primaryColor
+                      : Color(0xFF000000),
                 ),
                 textAlign: iconPath.isEmpty ? TextAlign.center : TextAlign.left,
               ),
@@ -81,8 +85,10 @@ class PhotoOptionDrawer extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildOption('Camera', 'assets/vectors/camera.svg', onCameraPressed),
-            _buildOption('Gallery', 'assets/vectors/picture.svg', onGalleryPressed),
+            _buildOption(
+                'Camera', 'assets/vectors/camera.svg', onCameraPressed),
+            _buildOption(
+                'Gallery', 'assets/vectors/picture.svg', onGalleryPressed),
             _buildOption('Cancel', '', onCancelPressed),
           ],
         ),

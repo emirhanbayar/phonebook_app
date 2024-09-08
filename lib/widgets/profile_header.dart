@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/constants.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String title;
@@ -32,7 +33,7 @@ class ProfileHeader extends StatelessWidget {
               style: GoogleFonts.nunito(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
-                color: Color(0xFF0075FF),
+                color: AppConstants.primaryColor,
               ),
             ),
           ),
@@ -41,7 +42,7 @@ class ProfileHeader extends StatelessWidget {
             style: GoogleFonts.nunito(
               fontWeight: FontWeight.w700,
               fontSize: 16,
-              color: Color(0xFF181818),
+              color: AppConstants.textColor,
             ),
           ),
           GestureDetector(
@@ -51,7 +52,9 @@ class ProfileHeader extends StatelessWidget {
               style: GoogleFonts.nunito(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
-                color: isActionEnabled ? Color(0xFF0075FF) : Color(0xFFBABABA),
+                color: isActionEnabled
+                    ? AppConstants.primaryColor
+                    : Color(0xFFBABABA),
               ),
             ),
           ),

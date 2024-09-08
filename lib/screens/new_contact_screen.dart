@@ -103,7 +103,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
               imageFile: _imageFile,
               imageUrl: _profileImageUrl,
               onTap: _showPhotoOptions,
-              isNewContact: true,
+              caption: "Add Photo",
             ),
             Padding(
               padding: EdgeInsets.all(30),

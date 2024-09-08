@@ -5,17 +5,19 @@ import 'screens/contacts_list_screen.dart';
 import 'screens/new_contact_screen.dart';
 import 'screens/view_contact_screen.dart';
 import 'screens/edit_contact_screen.dart';
+import 'services/service_locator.dart';
 
 void main() {
+  setupServiceLocator();
   runApp(
     ChangeNotifierProvider(
       create: (context) => ContactProvider(),
-      child: MyApp(),
+      child: PhonebookApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class PhonebookApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

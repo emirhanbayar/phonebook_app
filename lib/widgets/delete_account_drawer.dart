@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/constants.dart';
 
 class DeleteAccountDrawer extends StatelessWidget {
   final VoidCallback onYes;
@@ -18,7 +19,7 @@ class DeleteAccountDrawer extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color(0xFFF4F4F4),
+          color: AppConstants.backgroundColor,
           boxShadow: [
             BoxShadow(
               color: Color(0x40000000),

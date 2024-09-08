@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:io';
+import '../utils/constants.dart';
 
 class ProfileAvatar extends StatelessWidget {
   final String? imageUrl;
   final File? imageFile;
   final VoidCallback onTap;
-  final bool isNewContact;
+  final String caption;
 
   const ProfileAvatar({
     Key? key,
     this.imageUrl,
     this.imageFile,
     required this.onTap,
-    this.isNewContact = true,
+    this.caption = "Add Contact"
   }) : super(key: key);
 
   @override
@@ -24,11 +26,11 @@ class ProfileAvatar extends StatelessWidget {
         GestureDetector(
           onTap: onTap,
           child: Container(
-            width: 195,
-            height: 195,
+            width: MediaQuery.of(context).size.width * 0.35,
+            height: MediaQuery.of(context).size.width * 0.35,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFF4F4F4),
+              color: AppConstants.backgroundColor,
             ),
             child: _buildImage(),
           ),
@@ -37,11 +39,11 @@ class ProfileAvatar extends StatelessWidget {
         GestureDetector(
           onTap: onTap,
           child: Text(
-            isNewContact ? 'Add Photo' : 'Change Photo',
+            caption,
             style: GoogleFonts.nunito(
               fontWeight: FontWeight.w700,
               fontSize: 16,
-              color: Color(0xFF181818),
+              color: AppConstants.textColor,
             ),
           ),
         ),
@@ -55,35 +57,30 @@ class ProfileAvatar extends StatelessWidget {
         child: Image.file(
           imageFile!,
           fit: BoxFit.cover,
-          width: 195,
-          height: 195,
+          width: double.infinity,
+          height: double.infinity,
         ),
       );
     } else if (imageUrl != null && imageUrl!.isNotEmpty) {
       return ClipOval(
-        child: Image.network(
-          imageUrl!,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl!,
           fit: BoxFit.cover,
-          width: 195,
-          height: 195,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(child: CircularProgressIndicator());
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return SvgPicture.asset(
-              'assets/vectors/empty-avatar.svg',
-              width: 195,
-              height: 195,
-            );
-          },
+          width: double.infinity,
+          height: double.infinity,
+          placeholder: (context, url) => CircularProgressIndicator(),
+          errorWidget: (context, url, error) => SvgPicture.asset(
+            'assets/vectors/empty-avatar.svg',
+            width: double.infinity,
+            height: double.infinity,
+          ),
         ),
       );
     } else {
       return SvgPicture.asset(
         'assets/vectors/empty-avatar.svg',
-        width: 195,
-        height: 195,
+        width: double.infinity,
+        height: double.infinity,
       );
     }
   }

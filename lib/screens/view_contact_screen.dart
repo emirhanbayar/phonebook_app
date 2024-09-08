@@ -114,8 +114,8 @@ class _ViewContactScreenState extends State<ViewContactScreen> with WidgetsBindi
       child: _isLoading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        child: Column(
-          children: [
+           child: Column(
+            children: [
             ProfileHeader(
               title: 'Contact',
               onCancel: () => Navigator.pop(context),
@@ -125,7 +125,7 @@ class _ViewContactScreenState extends State<ViewContactScreen> with WidgetsBindi
             ProfileAvatar(
               imageUrl: _contact.profileImageUrl,
               onTap: () {}, // No action on view screen
-              isNewContact: false,
+              caption: "",
             ),
             Padding(
               padding: EdgeInsets.all(30),

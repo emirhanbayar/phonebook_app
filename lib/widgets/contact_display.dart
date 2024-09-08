@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/constants.dart';
 
 class ContactDisplay extends StatelessWidget {
   final String firstName;
@@ -24,10 +25,9 @@ class ContactDisplay extends StatelessWidget {
           child: Text(
             value,
             style: GoogleFonts.nunito(
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-              color: Color(0xFF181818),
-            ),
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                color: AppConstants.textColor),
           ),
         ),
         Container(

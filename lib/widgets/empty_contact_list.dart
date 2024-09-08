@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/constants.dart';
 
 class EmptyContactList extends StatelessWidget {
   final VoidCallback onCreateNewContact;
 
-  const EmptyContactList({Key? key, required this.onCreateNewContact}) : super(key: key);
+  const EmptyContactList({Key? key, required this.onCreateNewContact})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class EmptyContactList extends StatelessWidget {
             style: GoogleFonts.nunito(
               fontWeight: FontWeight.w700,
               fontSize: 16,
-              color: Color(0xFF0075FF),
+              color: AppConstants.primaryColor,
             ),
           ),
         ),

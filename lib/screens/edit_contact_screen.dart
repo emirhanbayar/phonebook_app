@@ -120,7 +120,7 @@ class _EditContactScreenState extends State<EditContactScreen> {
               imageFile: _imageFile,
               imageUrl: _profileImageUrl,
               onTap: _showPhotoOptions,
-              isNewContact: false,
+              caption: "Change Photo",
             ),
             Padding(
               padding: EdgeInsets.all(30),
