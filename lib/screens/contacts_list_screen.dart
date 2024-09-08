@@ -13,11 +13,21 @@ class ContactsListScreen extends StatefulWidget {
 }
 
 class _ContactsListScreenState extends State<ContactsListScreen> {
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ContactProvider>(context, listen: false).fetchContacts();
+    _fetchContacts();
+  }
+
+  Future<void> _fetchContacts() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await Provider.of<ContactProvider>(context, listen: false).fetchContacts();
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -35,11 +45,13 @@ class _ContactsListScreenState extends State<ContactsListScreen> {
                 ),
                 CustomSearchBar(
                   onSearch: (value) {
-                    contactProvider.fetchContacts(search: value);
+                    _fetchContacts();
                   },
                 ),
                 Expanded(
-                  child: contactProvider.contacts.isEmpty
+                  child: _isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : contactProvider.contacts.isEmpty
                       ? EmptyContactList(
                     onCreateNewContact: () => Navigator.pushNamed(context, '/new_contact'),
                   )

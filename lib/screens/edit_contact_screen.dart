@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'dart:typed_data';
 import '../models/contact.dart';
 import '../widgets/screen_layout.dart';
 import '../widgets/profile_header.dart';
@@ -10,6 +9,7 @@ import '../widgets/profile_avatar.dart';
 import '../widgets/contact_form.dart';
 import '../widgets/photo_option_drawer.dart';
 import '../widgets/success_notification.dart';
+import '../services/api_service.dart';
 
 class EditContactScreen extends StatefulWidget {
   @override
@@ -24,6 +24,7 @@ class _EditContactScreenState extends State<EditContactScreen> {
   File? _imageFile;
   late Contact _contact;
   bool _hasChanges = false;
+  bool _isUploading = false;
 
   @override
   void didChangeDependencies() {
@@ -62,23 +63,32 @@ class _EditContactScreenState extends State<EditContactScreen> {
   }
 
   Future<void> _updateContact() async {
+    setState(() {
+      _isUploading = true;
+    });
+
     final contactProvider = Provider.of<ContactProvider>(context, listen: false);
-
-    if (_imageFile != null) {
-      final bytes = await _imageFile!.readAsBytes();
-      _profileImageUrl = await contactProvider.uploadImage(Uint8List.fromList(bytes));
-    }
-
-    final updatedContact = Contact(
-      id: _contact.id,
-      firstName: _firstNameController.text,
-      lastName: _lastNameController.text,
-      phoneNumber: _phoneNumberController.text,
-      profileImageUrl: _profileImageUrl,
-    );
+    final apiService = ApiService();
 
     try {
+      if (_imageFile != null) {
+        _profileImageUrl = await apiService.uploadImage(_imageFile!);
+      }
+
+      final updatedContact = Contact(
+        id: _contact.id,
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        phoneNumber: _phoneNumberController.text,
+        profileImageUrl: _profileImageUrl,
+      );
+
       final result = await contactProvider.updateContact(updatedContact);
+
+      setState(() {
+        _isUploading = false;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: SuccessNotification(message: 'Contact updated successfully'),
@@ -88,8 +98,11 @@ class _EditContactScreenState extends State<EditContactScreen> {
       );
       Navigator.pop(context, result);
     } catch (e) {
+      setState(() {
+        _isUploading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update contact')),
+        SnackBar(content: Text('Failed to update contact: ${e.toString()}')),
       );
     }
   }
@@ -107,34 +120,45 @@ class _EditContactScreenState extends State<EditContactScreen> {
   Widget build(BuildContext context) {
     return ScreenLayout(
       useCardStyle: true,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProfileHeader(
-              title: 'Edit Contact',
-              onCancel: () => Navigator.pop(context),
-              onAction: _updateContact,
-              actionText: 'Done',
-              isActionEnabled: _hasChanges,
-            ),
-            ProfileAvatar(
-              imageFile: _imageFile,
-              imageUrl: _profileImageUrl,
-              onTap: _showPhotoOptions,
-              caption: "Change Photo",
-            ),
-            Padding(
-              padding: EdgeInsets.all(30),
-              child: ContactForm(
-                firstNameController: _firstNameController,
-                lastNameController: _lastNameController,
-                phoneNumberController: _phoneNumberController,
-                onChanged: _checkForChanges,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                ProfileHeader(
+                  title: 'Edit Contact',
+                  onCancel: () => Navigator.pop(context),
+                  onAction: _isUploading ? null : () => _updateContact(),
+                  actionText: 'Done',
+                  isActionEnabled: _hasChanges && !_isUploading,
+                ),
+        ProfileAvatar(
+          imageFile: _imageFile,
+          imageUrl: _profileImageUrl,
+          onTap: _showPhotoOptions,
+          caption: "Change Photo",
+        ),
+        Padding(
+        padding: EdgeInsets.all(30),
+          child: ContactForm(
+            firstNameController: _firstNameController,
+            lastNameController: _lastNameController,
+            phoneNumberController: _phoneNumberController,
+            onChanged: _checkForChanges,
+          ),
+        ),
+        ],
+        ),
+        ),
+            if (_isUploading)
+              Container(
+                color: Colors.black54,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
-            ),
           ],
         ),
-      ),
     );
   }
 }

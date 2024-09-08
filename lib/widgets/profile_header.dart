@@ -5,7 +5,7 @@ import '../utils/constants.dart';
 class ProfileHeader extends StatelessWidget {
   final String title;
   final VoidCallback onCancel;
-  final VoidCallback onAction;
+  final VoidCallback? onAction;  // Change this to nullable
   final String actionText;
   final bool isActionEnabled;
 
@@ -13,7 +13,7 @@ class ProfileHeader extends StatelessWidget {
     Key? key,
     required this.title,
     required this.onCancel,
-    required this.onAction,
+    this.onAction,  // Make this optional
     required this.actionText,
     this.isActionEnabled = true,
   }) : super(key: key);
@@ -52,7 +52,7 @@ class ProfileHeader extends StatelessWidget {
               style: GoogleFonts.nunito(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
-                color: isActionEnabled
+                color: isActionEnabled && onAction != null
                     ? AppConstants.primaryColor
                     : Color(0xFFBABABA),
               ),

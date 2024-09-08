@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:http/http.dart' as http;
-import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 import '../models/contact.dart';
 import '../utils/error_handler.dart';
 import '../utils/constants.dart';
@@ -106,25 +107,22 @@ class ApiService {
     }
   }
 
-  Future<Uint8List> _resizeImage(Uint8List imageBytes) async {
-    img.Image? image = img.decodeImage(imageBytes);
-    if (image == null) return imageBytes;
-
-    // Resize the image to a maximum width of 300 pixels while maintaining the aspect ratio
-    img.Image resizedImage = img.copyResize(image, width: 300);
-
-    // Encode the resized image as JPEG with 85% quality
-    return Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
-  }
-
-  Future<String> uploadImage(Uint8List imageBytes) async {
+  Future<String> uploadImage(File imageFile) async {
     try {
-      Uint8List resizedImageBytes = await _resizeImage(imageBytes);
+      // Compress the image
+      final compressedImage = await compressImage(imageFile);
 
-      var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/User/UploadImage'))
-        ..headers['ApiKey'] = apiKey
-        ..files.add(http.MultipartFile.fromBytes('image', resizedImageBytes, filename: 'image.jpg'));
+      // Create multipart request
+      var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/User/UploadImage'));
+      request.headers['ApiKey'] = apiKey;
 
+      // Add file to request
+      var stream = http.ByteStream(compressedImage.openRead());
+      var length = await compressedImage.length();
+      var multipartFile = http.MultipartFile('image', stream, length, filename: 'image.jpg');
+      request.files.add(multipartFile);
+
+      // Send request
       var response = await request.send();
 
       if (response.statusCode == 200) {
@@ -138,5 +136,20 @@ class ApiService {
     } catch (e) {
       throw Exception(ErrorHandler.getErrorMessage(e));
     }
+  }
+
+  Future<File> compressImage(File file) async {
+    final dir = await getTemporaryDirectory();
+    final targetPath = dir.absolute.path + "/temp.jpg";
+
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 70,
+      minWidth: 300,
+      minHeight: 300,
+    );
+
+    return File(result!.path);
   }
 }
