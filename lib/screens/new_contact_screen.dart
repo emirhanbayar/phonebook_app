@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:typed_data';
 import '../models/contact.dart';
 import '../widgets/screen_layout.dart';
 import '../widgets/profile_header.dart';
@@ -57,7 +58,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
 
     if (_imageFile != null) {
       final bytes = await _imageFile!.readAsBytes();
-      _profileImageUrl = await contactProvider.uploadImage(bytes);
+      _profileImageUrl = await contactProvider.uploadImage(Uint8List.fromList(bytes));
     }
 
     final newContact = Contact(

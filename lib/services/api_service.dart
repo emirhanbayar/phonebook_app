@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 import '../models/contact.dart';
 import '../utils/error_handler.dart';
 import '../utils/constants.dart';
@@ -104,11 +106,24 @@ class ApiService {
     }
   }
 
-  Future<String> uploadImage(List<int> imageBytes) async {
+  Future<Uint8List> _resizeImage(Uint8List imageBytes) async {
+    img.Image? image = img.decodeImage(imageBytes);
+    if (image == null) return imageBytes;
+
+    // Resize the image to a maximum width of 300 pixels while maintaining the aspect ratio
+    img.Image resizedImage = img.copyResize(image, width: 300);
+
+    // Encode the resized image as JPEG with 85% quality
+    return Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
+  }
+
+  Future<String> uploadImage(Uint8List imageBytes) async {
     try {
+      Uint8List resizedImageBytes = await _resizeImage(imageBytes);
+
       var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/User/UploadImage'))
         ..headers['ApiKey'] = apiKey
-        ..files.add(http.MultipartFile.fromBytes('image', imageBytes, filename: 'image.jpg'));
+        ..files.add(http.MultipartFile.fromBytes('image', resizedImageBytes, filename: 'image.jpg'));
 
       var response = await request.send();
 

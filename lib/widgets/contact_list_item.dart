@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ContactListItem extends StatelessWidget {
   final String name;
@@ -33,21 +34,16 @@ class ContactListItem extends StatelessWidget {
                 margin: EdgeInsets.only(right: 15),
                 width: 34,
                 height: 34,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: imageUrl != null
-                      ? DecorationImage(
+                child: imageUrl != null
+                    ? ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl!,
                     fit: BoxFit.cover,
-                    image: NetworkImage(imageUrl!),
-                  )
-                      : null,
-                ),
-                child: imageUrl == null
-                    ? Icon(
-                  Icons.person,
-                  color: Colors.grey,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.person, color: Colors.grey),
+                  ),
                 )
-                    : null,
+                    : Icon(Icons.person, color: Colors.grey),
               ),
               Expanded(
                 child: Column(

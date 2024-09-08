@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 import '../services/api_service.dart';
 
 class Contact {
@@ -90,7 +91,7 @@ class ContactProvider with ChangeNotifier {
     }
   }
 
-  Future<String> uploadImage(List<int> imageBytes) async {
+  Future<String> uploadImage(Uint8List imageBytes) async {
     try {
       return await _apiService.uploadImage(imageBytes);
     } catch (e) {
