@@ -24,7 +24,7 @@ This Flutter application is a phone book solution that allows users to manage th
 
 2. Navigate to the project directory:
    ```
-   cd phone-book-flutter
+   cd phonebook_app
    ```
 
 3. Install dependencies:
