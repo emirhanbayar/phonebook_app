@@ -24,7 +24,7 @@ This Flutter application is a phone book solution that allows users to manage th
 
 2. Navigate to the project directory:
    ```
-   cd phonebook_app
+   cd phone-book-flutter
    ```
 
 3. Install dependencies:
@@ -58,6 +58,10 @@ This application integrates with a REST API for contact management. The base URL
 
 The application uses the Provider package for state management, allowing for efficient updates of the UI when data changes. The `ContactProvider` class in `models/contact.dart` manages the contact data and API interactions.
 
+## Dependency Injection
+
+The project uses the `get_it` package for dependency injection, providing a clean way to manage and access services throughout the app. The setup is done in services/service_locator.dart.
+
 ## Image Handling
 
 - Images are cached using the `cached_network_image` package for improved performance.
@@ -70,7 +74,6 @@ The application uses the Provider package for state management, allowing for eff
 Because of time constraints:
 
 - No unit or widget tests implemented in the current version.
-- App currently only supports PNG and JPG formats for contact photos.
 - App could be more centralized.
 
 ## Additional Features
